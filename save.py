@@ -118,8 +118,9 @@ class SaveManager:
     def serialize_inventory(self, inventory: Inventory) -> List[Dict[str, Any]]:
         """Serialize inventory to list of dictionaries"""
         serialized_items = []
-        for item in inventory.items:
-            serialized_items.append(self.serialize_item(item))
+        if hasattr(inventory, 'items') and inventory.items:
+            for item in inventory.items:
+                serialized_items.append(self.serialize_item(item))
         return serialized_items
     
     def serialize_item(self, item: Optional[Item]) -> Optional[Dict[str, Any]]:

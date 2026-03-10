@@ -54,14 +54,14 @@ class Game:
     def print_title(self):
         """Print game title screen"""
         title = """
-    ████████╗ █████╗ ███╗   ██╗██╗  ██╗    ██████╗ ███████╗ █████╗ ████████╗
-    ╚══██╔══╝██╔══██╗████╗  ██║██║ ██╔╝    ██╔══██╗██╔════╝██╔══██╗╚══██╔══╝
-       ██║   ███████║██╔██╗ ██║█████╔╝     ██████╔╝█████╗  ███████║   ██║   
-       ██║   ██╔══██║██║╚██╗██║██╔═██╗     ██╔══██╗██╔══╝  ██╔══██║   ██║   
-       ██║   ██║  ██║██║ ╚████║██║  ██╗    ██████╔╝███████╗██║  ██║   ██║   
-       ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═╝   ╚═╝   
-                                                                            
-                           QUEST GAME
+██████╗ ██╗  ██╗██╗██╗      ██████╗  ██╗   ██╗███████╗███████╗████████╗
+██╔══██╗██║  ██║██║██║     ██╔═══██╗ ██║   ██║██╔════╝██╔════╝╚══██╔══╝
+██████╔╝███████║██║██║     ██║   ██║ ██║   ██║█████╗  ███████╗   ██║   
+██╔══██╗██╔══██║██║██║     ██║▄▄ ██║ ██║   ██║██╔══╝  ╚════██║   ██║   
+██████╔╝██║  ██║██║███████╗╚██████╔╝ ╚██████╔╝███████╗███████║   ██║   
+╚═════╝ ╚═╝  ╚═╝╚═╝╚══════╝ ╚══▀▀═╝   ╚═════╝ ╚══════╝╚══════╝   ╚═╝    
+                                                                                                                 
+                           make by Bhilal. CHITOU (Bhil€)
         """
         print(self.colors['cyan'] + title + self.colors['reset'])
         print(self.colors['yellow'] + "                    A Terminal RPG Adventure" + self.colors['reset'])
@@ -536,7 +536,7 @@ class Game:
     def handle_help(self):
         """Display help information"""
         help_text = """
-🎮 QUEST GAME - HELP GUIDE
+🎮 BHILQUEST - HELP GUIDE
 ========================
 
 MOVEMENT:
@@ -603,7 +603,7 @@ Good luck, hero!
             menu_choice = self.main_menu()
             
             if menu_choice == "quit":
-                print("\n👋 Thanks for playing QUEST GAME!")
+                print("\n👋 Thanks for playing BhilQuest!")
                 break
             elif menu_choice == "new":
                 self.create_new_game()

@@ -17,7 +17,7 @@ class SaveManager:
     
     def __init__(self, save_directory: str = "saves"):
         self.save_directory = save_directory
-        self.save_file = os.path.join(save_directory, "bhilgame_save.json")
+        self.save_file = os.path.join(save_directory, "bhilquest_save.json")
         self.ensure_save_directory()
     
     def ensure_save_directory(self):

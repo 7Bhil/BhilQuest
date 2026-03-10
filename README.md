@@ -100,7 +100,7 @@ The game features several quests:
 
 ## 💾 Save System
 
-The game automatically creates a `saves/` directory and stores your progress in `bhilgame_save.json`. Your save includes:
+The game automatically creates a `saves/` directory and stores your progress in `bhilquest_save.json`. Your save includes:
 - Character stats and level
 - Inventory and equipped items
 - Current location and visited areas

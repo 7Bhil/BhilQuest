@@ -1,6 +1,10 @@
 """
-BhilGame - A Terminal-Based RPG Adventure Game
+BhilQuest - A Terminal-Based RPG Adventure Game
 Main game loop and user interface
+
+Created by: Bhilal CHITOU (Bhil€)
+Contact: 7bhilal.chitou7@gmail.com
+GitHub: https://github.com/7Bhil
 """
 
 import os
@@ -57,7 +61,7 @@ class Game:
        ██║   ██║  ██║██║ ╚████║██║  ██╗    ██████╔╝███████╗██║  ██║   ██║   
        ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═╝   ╚═╝   
                                                                             
-                           ADVENTURE GAME
+                           QUEST GAME
         """
         print(self.colors['cyan'] + title + self.colors['reset'])
         print(self.colors['yellow'] + "                    A Terminal RPG Adventure" + self.colors['reset'])
@@ -532,7 +536,7 @@ class Game:
     def handle_help(self):
         """Display help information"""
         help_text = """
-🎮 BHILGAME - HELP GUIDE
+🎮 QUEST GAME - HELP GUIDE
 ========================
 
 MOVEMENT:
@@ -599,7 +603,7 @@ Good luck, hero!
             menu_choice = self.main_menu()
             
             if menu_choice == "quit":
-                print("\n👋 Thanks for playing BhilGame!")
+                print("\n👋 Thanks for playing QUEST GAME!")
                 break
             elif menu_choice == "new":
                 self.create_new_game()
@@ -620,7 +624,7 @@ def main():
         game = Game()
         game.run()
     except KeyboardInterrupt:
-        print("\n\n👋 Thanks for playing BhilGame!")
+        print("\n\n👋 Thanks for playing BhilQuest!")
         sys.exit(0)
     except Exception as e:
         print(f"\n❌ An error occurred: {e}")

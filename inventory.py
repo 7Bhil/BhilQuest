@@ -64,22 +64,22 @@ class Consumable(Item):
         """Use the consumable item"""
         if self.effect_type == "heal":
             actual_heal = player.heal(self.effect_value)
-            print(f"💚 You used {self.name} and restored {actual_heal} HP!")
+            print(f"💚 Vous avez utilisé {self.name} et récupéré {actual_heal} PV !")
             return True
         elif self.effect_type == "attack_buff":
             player.attack += self.effect_value
-            print(f"⚔️  You used {self.name}! Attack increased by {self.effect_value} temporarily!")
+            print(f"⚔️  Vous avez utilisé {self.name} ! L'attaque augmente de {self.effect_value} temporairement !")
             return True
         elif self.effect_type == "defense_buff":
             player.defense += self.effect_value
-            print(f"🛡️  You used {self.name}! Defense increased by {self.effect_value} temporarily!")
+            print(f"🛡️  Vous avez utilisé {self.name} ! La défense augmente de {self.effect_value} temporairement !")
             return True
         return False
     
     def get_info(self) -> str:
         effect_text = ""
         if self.effect_type == "heal":
-            effect_text = f"Restores {self.effect_value} HP"
+            effect_text = f"Restaure {self.effect_value} PV"
         elif self.effect_type == "attack_buff":
             effect_text = f"ATK +{self.effect_value}"
         elif self.effect_type == "defense_buff":
@@ -164,9 +164,9 @@ class Inventory:
     def get_inventory_display(self) -> str:
         """Get formatted inventory display"""
         if not self.items:
-            return "🎒 Your inventory is empty"
+            return "🎒 Votre inventaire est vide"
         
-        display = "🎒 INVENTORY\n"
+        display = "🎒 INVENTAIRE\n"
         display += "=" * 40 + "\n"
         
         for i, item in enumerate(self.items):
@@ -174,7 +174,7 @@ class Inventory:
             display += f"{i+1:2d}. {item.name}{quantity_text}\n"
             display += f"     {item.get_info()}\n"
         
-        display += f"\nSlots: {len(self.items)}/{self.max_slots}"
+        display += f"\nEmplacements : {len(self.items)}/{self.max_slots}"
         return display
     
     def get_empty_slots(self) -> int:
@@ -202,8 +202,8 @@ class Inventory:
 def create_health_potion() -> Consumable:
     """Create a health potion"""
     return Consumable(
-        "Health Potion",
-        "A magical red liquid that restores health when consumed",
+        "Potion de Soin",
+        "Un liquide rouge magique qui restaure la santé",
         "heal",
         30,
         25
@@ -213,8 +213,8 @@ def create_health_potion() -> Consumable:
 def create_large_health_potion() -> Consumable:
     """Create a large health potion"""
     return Consumable(
-        "Large Health Potion",
-        "A powerful magical elixir that restores significant health",
+        "Grande Potion de Soin",
+        "Un puissant élixir magique qui restaure beaucoup de santé",
         "heal",
         60,
         50
@@ -224,8 +224,8 @@ def create_large_health_potion() -> Consumable:
 def create_attack_potion() -> Consumable:
     """Create an attack potion"""
     return Consumable(
-        "Attack Potion",
-        "A fiery brew that temporarily increases attack power",
+        "Potion d'Attaque",
+        "Un breuvage ardent qui augmente temporairement la force d'attaque",
         "attack_buff",
         5,
         30
@@ -235,8 +235,8 @@ def create_attack_potion() -> Consumable:
 def create_defense_potion() -> Consumable:
     """Create a defense potion"""
     return Consumable(
-        "Defense Potion",
-        "A sturdy tonic that temporarily increases defense",
+        "Potion de Défense",
+        "Un tonique fortifiant qui augmente temporairement la défense",
         "defense_buff",
         3,
         30
@@ -246,8 +246,8 @@ def create_defense_potion() -> Consumable:
 def create_iron_sword() -> Weapon:
     """Create an iron sword"""
     return Weapon(
-        "Iron Sword",
-        "A well-crafted iron sword, reliable and effective",
+        "Épée en Fer",
+        "Une épée en fer bien forgée, fiable et efficace",
         8,
         75
     )
@@ -256,8 +256,8 @@ def create_iron_sword() -> Weapon:
 def create_steel_sword() -> Weapon:
     """Create a steel sword"""
     return Weapon(
-        "Steel Sword",
-        "A superior steel sword that strikes with deadly force",
+        "Épée en Acier",
+        "Une épée en acier supérieure qui frappe avec une force mortelle",
         12,
         150
     )
@@ -266,8 +266,8 @@ def create_steel_sword() -> Weapon:
 def create_iron_armor() -> Armor:
     """Create iron armor"""
     return Armor(
-        "Iron Armor",
-        "Heavy iron armor that provides solid protection",
+        "Armure en Fer",
+        "Une armure en fer lourde qui offre une protection solide",
         6,
         80
     )
@@ -276,8 +276,8 @@ def create_iron_armor() -> Armor:
 def create_steel_armor() -> Armor:
     """Create steel armor"""
     return Armor(
-        "Steel Armor",
-        "Well-fitted steel armor offering excellent protection",
+        "Armure en Acier",
+        "Une armure en acier bien ajustée offrant une excellente protection",
         10,
         160
     )

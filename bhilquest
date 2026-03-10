@@ -15,8 +15,8 @@ import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 
-# Import du lanceur i18n
-from launcher_i18n import main
+# Import du lanceur
+from launcher import main
 
 if __name__ == "__main__":
     main()

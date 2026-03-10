@@ -76,7 +76,7 @@ class Quest:
                 if not hasattr(player, 'gold'):
                     player.gold = 0
                 player.gold += gold
-                reward_text.append(f"{gold} gold")
+                reward_text.append(f"{gold} pièces d'or")
             
             if "item" in self.rewards:
                 item_name = self.rewards["item"]
@@ -88,7 +88,7 @@ class Quest:
                     from inventory import create_iron_sword
                     item = create_iron_sword()
                 else:
-                    item = create_quest_item(item_name, "Quest reward item", self.quest_id)
+                    item = create_quest_item(item_name, "Objet de récompense de quête", self.quest_id)
                 
                 player.add_item(item)
                 reward_text.append(item.name)
@@ -104,12 +104,12 @@ class Quest:
             if req_type == "kill":
                 for enemy_type, required_count in req_data.items():
                     current = self.progress.get(f"kill_{enemy_type}", 0)
-                    progress_lines.append(f"Defeat {enemy_type}s: {current}/{required_count}")
+                    progress_lines.append(f"Vaincre {enemy_type}s : {current}/{required_count}")
             elif req_type == "item":
                 item_name = req_data
                 has_item = self.progress.get("has_item", False)
                 status = "✓" if has_item else "✗"
-                progress_lines.append(f"Obtain {item_name}: {status}")
+                progress_lines.append(f"Obtenir {item_name} : {status}")
         
         return "\n".join(progress_lines)
 
@@ -135,7 +135,7 @@ class NPC:
     
     def get_dialogue(self, situation: str = "greeting") -> str:
         """Get dialogue for a situation"""
-        return self.dialogues.get(situation, "I have nothing to say.")
+        return self.dialogues.get(situation, "Je n'ai rien à vous dire.")
     
     def has_available_quests(self, player: Player) -> bool:
         """Check if NPC has quests available for player"""
@@ -167,93 +167,89 @@ class StoryManager:
         
         # Village Elder
         elder = NPC(
-            "Village Elder Marcus",
-            "A wise old man with a long white beard and kind eyes. He has lived in the village his entire life and knows many secrets.",
+            "Ancien Marcus",
+            "Un vieil homme sage avec une longue barbe blanche et des yeux bienveillants. Il a vécu dans le village toute sa vie.",
             "village"
         )
         elder.add_dialogue("greeting", 
-            "Greetings, young adventurer! I am Marcus, the village elder. Our peaceful village is facing troubles lately. "
-            "Goblins have been raiding our supplies, and strange creatures emerge from the nearby ruins. "
-            "We need brave warriors like you to help us.")
+            "Salutations, jeune aventurier ! Je suis Marcus, l'ancien du village. Notre village fait face à des problèmes. "
+            "Les gobelins pillent nos réserves, et d'étranges créatures sortent des ruines proches. "
+            "Nous avons besoin de braves guerriers comme vous.")
         elder.add_dialogue("quest_accepted",
-            "Excellent! Your courage gives us hope. Return to me when you have completed your tasks, "
-            "and I shall reward you generously.")
+            "Excellent ! Votre courage nous donne espoir. Revenez me voir quand vous aurez fini vos tâches, "
+            "et je vous récompenserai généreusement.")
         elder.add_dialogue("quest_completed",
-            "Wonderful work! You have saved our village from these threats. The people can sleep peacefully now. "
-            "As promised, here is your reward. But... I fear greater dangers await you in the world.")
+            "Magnifique travail ! Vous avez sauvé notre village. Les gens peuvent dormir paisiblement. "
+            "Comme promis, voici votre récompense. Mais... je crains que de plus grands dangers ne vous attendent.")
         elder.add_dialogue("no_quests",
-            "You have already helped us so much. Rest well, brave hero. Perhaps speak to others in the village "
-            "for new adventures.")
+            "Vous nous avez déjà tant aidés. Reposez-vous bien, héros. Parlez aux autres pour de nouvelles aventures.")
         
         # Blacksmith
         blacksmith = NPC(
-            "Blacksmith Thorin",
-            "A muscular dwarf with a thick beard and soot-covered hands. He's always working at his forge.",
+            "Thorin le Forgeron",
+            "Un nain musclé avec une barbe épaisse et des mains couvertes de suie. Il travaille toujours à sa forge.",
             "village"
         )
         blacksmith.add_dialogue("greeting",
-            "Ah, a new face! I'm Thorin, the village blacksmith. I forge the finest weapons and armor in these lands. "
-            "If you bring me rare materials from your adventures, I can craft you something special.")
+            "Ah, un nouveau visage ! Je suis Thorin. Je forge les meilleures armes et armures du pays. "
+            "Si vous m'apportez des matériaux rares, je pourrai vous fabriquer quelque chose de spécial.")
         blacksmith.add_dialogue("quest_accepted",
-            "Perfect! These materials will allow me to create masterwork equipment. Be careful in the dungeons - "
-            "they're not for the faint of heart!")
+            "Parfait ! Ces matériaux me permettront de créer un équipement exceptionnel. Soyez prudent dans les donjons !")
         blacksmith.add_dialogue("quest_completed",
-            "By my hammer, you did it! Here, take this masterwork weapon I forged for you. "
-            "It should serve you well in the battles ahead.")
+            "Par mon marteau, vous l'avez fait ! Tenez, prenez cette arme de maître que j'ai forgée pour vous.")
         
         # Mysterious Stranger
         stranger = NPC(
-            "Mysterious Stranger",
-            "A hooded figure with an air of mystery about them. Their face is hidden in shadow.",
+            "L'Étranger Mystérieux",
+            "Une silhouette encapuchonnée entourée de mystère. Son visage est caché dans l'ombre.",
             "ruins"
         )
         stranger.add_dialogue("greeting",
-            "So, another warrior seeks the secrets of these ruins... I am but a humble scholar of ancient times. "
-            "The ruins hold great power, but also great danger. Perhaps you can help me uncover their secrets?")
+            "Alors, un autre guerrier cherche les secrets de ces ruines... Je ne suis qu'un humble érudit. "
+            "Ces ruines cachent un grand pouvoir, mais aussi un grand danger. M'aiderez-vous à découvrir leurs secrets ?")
         stranger.add_dialogue("quest_accepted",
-            "Wisdom choice. The ancient artifacts must be recovered before they fall into wrong hands. "
-            "The dungeon depths hold what we seek.")
+            "Choix judicieux. Les anciens artefacts doivent être récupérés avant de tomber entre de mauvaises mains.")
         stranger.add_dialogue("quest_completed",
-            "Incredible! You have recovered the artifact! This will help protect the realm from darkness. "
-            "Your destiny is greater than you imagine...")
+            "Incroyable ! Vous avez récupéré l'artefact ! Cela aidera à protéger le royaume des ténèbres. "
+            "Votre destin est plus grand que vous ne l'imaginez...")
         
         # Create quests
-        # Quest 1: Goblin Trouble
+        # Quest 1: Problème de Gobelins
         goblin_quest = Quest(
             "goblin_trouble",
-            "Goblin Trouble",
-            "The village is being raided by goblins. Help us by defeating 5 goblins to make our village safe again.",
-            "Village Elder Marcus",
+            "Problème de Gobelins",
+            "Le village est attaqué par des gobelins. Aidez-nous en battant 5 gobelins.",
+            "Ancien Marcus",
             {"kill": {"goblin": 5}},
             {"exp": 50, "gold": 25, "item": "health_potion"}
         )
         
-        # Quest 2: Ancient Ruins Exploration
+        # Quest 2: Exploration des Ruines
         ruins_quest = Quest(
             "ruins_exploration",
-            "Ruins Exploration",
-            "Explore the ancient ruins and find the mysterious artifact that the stranger seeks.",
-            "Mysterious Stranger",
+            "Exploration des Ruines",
+            "Explorez les ruines antiques et trouvez l'artefact mystérieux.",
+            "L'Étranger Mystérieux",
             {"item": "ancient_artifact"},
             {"exp": 100, "gold": 75, "item": "iron_sword"}
         )
         
-        # Quest 3: Dungeon Materials
+        # Quest 3: Matériaux du Donjon
         dungeon_quest = Quest(
             "dungeon_materials",
-            "Dungeon Materials",
-            "Venture into the dungeon depths and collect rare materials for the blacksmith.",
-            "Blacksmith Thorin",
+            "Matériaux du Donjon",
+            "Aventurez-vous dans les profondeurs du donjon et ramassez des matériaux rares pour le forgeron.",
+            "Thorin le Forgeron",
             {"kill": {"skeleton": 3, "orc": 2}},
             {"exp": 150, "gold": 100, "item": "steel_sword"}
         )
         
-        # Quest 4: Dragon Slayer (final quest)
+        # Quest 4: Tueur de Dragon (quête finale)
         dragon_quest = Quest(
             "dragon_slayer",
-            "Dragon Slayer",
-            "The ancient dragon in the dungeon depths threatens the entire realm. You must defeat it!",
-            "Village Elder Marcus",
+            "Tueur de Dragon",
+            "Le dragon ancien dans les profondeurs du donjon menace tout le royaume. Vous devez le vaincre !",
+            "Ancien Marcus",
             {"kill": {"dragon": 1}},
             {"exp": 500, "gold": 500, "item": "dragon_scale"}
         )
@@ -333,41 +329,41 @@ class StoryManager:
     def get_story_status(self) -> str:
         """Get current story status"""
         if self.main_story_progress == 0:
-            return "You are a new adventurer, ready to prove your worth."
+            return "Vous êtes un nouvel aventurier, prêt à prouver sa valeur."
         elif self.main_story_progress == 1:
-            return "You have tasted combat and survived. The path of a hero opens before you."
+            return "Vous avez goûté au combat et survécu. Le chemin du héros s'ouvre à vous."
         elif self.main_story_progress == 2:
-            return "You have proven yourself as a capable warrior. Greater challenges await."
+            return "Vous avez prouvé vos capacités de guerrier. De plus grands défis vous attendent."
         elif self.main_story_progress == 3:
-            return "You are a true hero of the realm! The dragon is defeated and peace restored."
+            return "Vous êtes un véritable héros du royaume ! Le dragon est vaincu et la paix restaurée."
         else:
-            return "Your legend continues to grow..."
+            return "Votre légende continue de grandir..."
     
     def get_quests_display(self, player: Player) -> str:
         """Get formatted display of quests"""
-        display = "📜 QUESTS\n"
+        display = "📜 QUÊTES\n"
         display += "=" * 40 + "\n"
         
         # Active quests
         active_quests = self.get_active_quests(player)
         if active_quests:
-            display += "🔄 ACTIVE QUESTS:\n"
+            display += "🔄 QUÊTES ACTIVES :\n"
             for quest in active_quests:
                 display += f"\n• {quest.name}\n"
                 display += f"  {quest.description}\n"
-                display += f"  Progress:\n"
+                display += f"  Progression :\n"
                 progress_text = quest.get_progress_text()
                 for line in progress_text.split('\n'):
                     display += f"    {line}\n"
         else:
-            display += "🔄 ACTIVE QUESTS: None\n"
+            display += "🔄 QUÊTES ACTIVES : Aucune\n"
         
         # Available quests
         available_quests = self.get_available_quests(player)
         if available_quests:
-            display += "\n📋 AVAILABLE QUESTS:\n"
+            display += "\n📋 QUÊTES DISPONIBLES :\n"
             for quest in available_quests:
-                display += f"\n• {quest.name} (from {quest.quest_giver})\n"
+                display += f"\n• {quest.name} (de {quest.quest_giver})\n"
                 display += f"  {quest.description}\n"
         
         return display

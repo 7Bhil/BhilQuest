@@ -60,12 +60,12 @@ class Character:
         self.attack += attack_increase
         self.defense += defense_increase
         
-        print(f"\n🎉 {self.name} leveled up to level {self.level}!")
-        print(f"   HP +{hp_increase}, Attack +{attack_increase}, Defense +{defense_increase}")
+        print(f"\n🎉 {self.name} est passé au niveau {self.level} !")
+        print(f"   PV +{hp_increase}, Attaque +{attack_increase}, Défense +{defense_increase}")
     
     def get_stats(self) -> str:
         """Return formatted string of character stats"""
-        return f"{self.name} (Lv.{self.level}) - HP: {self.hp}/{self.max_hp}, ATK: {self.attack}, DEF: {self.defense}"
+        return f"{self.name} (Niv.{self.level}) - PV: {self.hp}/{self.max_hp}, ATK: {self.attack}, DEF: {self.defense}"
 
 
 class Player(Character):
@@ -73,7 +73,8 @@ class Player(Character):
     
     def __init__(self, name: str):
         super().__init__(name, hp=100, attack=10, defense=5, level=1)
-        self.inventory = []
+        from inventory import Inventory
+        self.inventory = Inventory()
         self.equipped_weapon = None
         self.equipped_armor = None
         self.quests_completed = []
@@ -82,65 +83,37 @@ class Player(Character):
     def get_total_attack(self) -> int:
         """Calculate total attack including equipped weapon"""
         total_attack = self.attack
-        if self.equipped_weapon:
-            total_attack += self.equipped_weapon.attack_bonus
+        weapon = getattr(self, 'equipped_weapon', None)
+        if weapon:
+            total_attack += getattr(weapon, 'attack_bonus', 0)
         return total_attack
     
     def get_total_defense(self) -> int:
         """Calculate total defense including equipped armor"""
         total_defense = self.defense
-        if self.equipped_armor:
-            total_defense += self.equipped_armor.defense_bonus
+        armor = getattr(self, 'equipped_armor', None)
+        if armor:
+            total_defense += getattr(armor, 'defense_bonus', 0)
         return total_defense
-    
-    def equip_weapon(self, weapon):
-        """Equip a weapon"""
-        if self.equipped_weapon:
-            self.inventory.append(self.equipped_weapon)
-        self.equipped_weapon = weapon
-        if weapon in self.inventory:
-            self.inventory.remove(weapon)
-        print(f"🗡️  Equipped {weapon.name}")
-    
-    def equip_armor(self, armor):
-        """Equip armor"""
-        if self.equipped_armor:
-            self.inventory.append(self.equipped_armor)
-        self.equipped_armor = armor
-        if armor in self.inventory:
-            self.inventory.remove(armor)
-        print(f"🛡️  Equipped {armor.name}")
-    
-    def add_item(self, item):
-        """Add item to inventory"""
-        self.inventory.append(item)
-        print(f"📦 Obtained {item.name}")
-    
-    def use_item(self, item_index: int) -> bool:
-        """Use an item from inventory"""
-        if 0 <= item_index < len(self.inventory):
-            item = self.inventory[item_index]
-            if item.use(self):
-                self.inventory.pop(item_index)
-                return True
-        return False
-    
+
     def get_detailed_stats(self) -> str:
         """Return detailed stats including equipment"""
-        weapon_name = self.equipped_weapon.name if self.equipped_weapon else "None"
-        armor_name = self.equipped_armor.name if self.equipped_armor else "None"
+        weapon = getattr(self, 'equipped_weapon', None)
+        armor = getattr(self, 'equipped_armor', None)
+        weapon_name = getattr(weapon, 'name', "Aucune")
+        armor_name = getattr(armor, 'name', "Aucune")
         
         stats = f"""
 ╔══════════════════════════════════════╗
-║     {self.name} - Level {self.level} Warrior     ║
+║     {self.name} - Guerrier Niveau {self.level:<2}   ║
 ╠══════════════════════════════════════╣
-║ HP: {self.hp}/{self.max_hp}                              ║
-║ Attack: {self.get_total_attack()} (Base: {self.attack})                    ║
-║ Defense: {self.get_total_defense()} (Base: {self.defense})                   ║
-║ EXP: {self.experience}/{self.experience_to_next_level}                        ║
+║ PV : {self.hp}/{self.max_hp:<28} ║
+║ Attaque : {self.get_total_attack():<25} (Base : {self.attack}) ║
+║ Défense : {self.get_total_defense():<25} (Base : {self.defense}) ║
+║ EXP : {self.experience}/{self.experience_to_next_level:<26} ║
 ╠══════════════════════════════════════╣
-║ Weapon: {weapon_name:<18} ║
-║ Armor: {armor_name:<18} ║
+║ Arme : {weapon_name:<29} ║
+║ Armure : {armor_name:<27} ║
 ╚══════════════════════════════════════╝"""
         return stats
 
@@ -170,7 +143,7 @@ class Enemy(Character):
 # Enemy templates
 ENEMY_TEMPLATES = {
     "goblin": {
-        "name": "Goblin",
+        "name": "Gobelin",
         "hp": 30,
         "attack": 8,
         "defense": 2,
@@ -178,7 +151,7 @@ ENEMY_TEMPLATES = {
         "exp_reward": 25
     },
     "wolf": {
-        "name": "Wild Wolf",
+        "name": "Loup Sauvage",
         "hp": 40,
         "attack": 12,
         "defense": 3,
@@ -194,7 +167,7 @@ ENEMY_TEMPLATES = {
         "exp_reward": 50
     },
     "skeleton": {
-        "name": "Skeleton",
+        "name": "Squelette",
         "hp": 45,
         "attack": 14,
         "defense": 4,
@@ -202,7 +175,7 @@ ENEMY_TEMPLATES = {
         "exp_reward": 45
     },
     "orc": {
-        "name": "Orc Warrior",
+        "name": "Guerrier Orque",
         "hp": 80,
         "attack": 20,
         "defense": 8,
@@ -210,7 +183,7 @@ ENEMY_TEMPLATES = {
         "exp_reward": 80
     },
     "dragon": {
-        "name": "Ancient Dragon",
+        "name": "Dragon Ancien",
         "hp": 200,
         "attack": 35,
         "defense": 15,
@@ -226,13 +199,26 @@ def create_enemy(enemy_type: str, level_modifier: int = 0) -> Enemy:
         enemy_type = "goblin"  # Default fallback
     
     template = ENEMY_TEMPLATES[enemy_type].copy()
-    template["level"] += level_modifier
     
     # Scale stats with level
-    level_scale = template["level"]
-    template["hp"] = int(template["hp"] * (1 + level_scale * 0.1))
-    template["attack"] = int(template["attack"] * (1 + level_scale * 0.1))
-    template["defense"] = int(template["defense"] * (1 + level_scale * 0.1))
-    template["exp_reward"] = int(template["exp_reward"] * (1 + level_scale * 0.1))
+    level_scale: int = int(template["level"]) + level_modifier
+    template["level"] = level_scale
     
-    return Enemy(**template)
+    hp: int = int(template["hp"])
+    attack: int = int(template["attack"])
+    defense: int = int(template["defense"])
+    exp_reward: int = int(template["exp_reward"])
+    
+    template["hp"] = int(hp * (1 + level_scale * 0.1))
+    template["attack"] = int(attack * (1 + level_scale * 0.1))
+    template["defense"] = int(defense * (1 + level_scale * 0.1))
+    template["exp_reward"] = int(exp_reward * (1 + level_scale * 0.1))
+    
+    return Enemy(
+        name=str(template["name"]),
+        hp=int(template["hp"]),
+        attack=int(template["attack"]),
+        defense=int(template["defense"]),
+        level=int(template["level"]),
+        exp_reward=int(template["exp_reward"])
+    )

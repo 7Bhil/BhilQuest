@@ -80,18 +80,18 @@ class Game:
             self.clear_screen()
             self.print_title()
             
-            print("📋 MAIN MENU")
+            print("📋 MENU PRINCIPAL")
             print("="*30)
-            print("1. New Game")
-            print("2. Continue Game")
-            print("3. Quit")
+            print("1. Nouvelle Partie")
+            print("2. Continuer")
+            print("3. Quitter")
             print("="*30)
             
             # Check if save file exists
             if not self.save_manager.has_save_file():
-                print("⚠️  No save file found")
+                print("⚠️  Aucune sauvegarde trouvée")
             
-            choice = input("\nChoose your option (1-3): ").strip()
+            choice = input("\nChoisissez une option (1-3) : ").strip()
             
             if choice == "1":
                 return "new"
@@ -99,31 +99,31 @@ class Game:
                 if self.save_manager.has_save_file():
                     return "continue"
                 else:
-                    print("❌ No save file found!")
-                    input("Press Enter to continue...")
+                    print("❌ Aucune sauvegarde trouvée !")
+                    input("Appuyez sur Entrée pour continuer...")
             elif choice == "3":
                 return "quit"
             else:
-                print("❌ Invalid choice! Please enter 1-3.")
-                input("Press Enter to continue...")
+                print("❌ Choix invalide ! Veuillez entrer 1-3.")
+                input("Appuyez sur Entrée pour continuer...")
     
     def create_new_game(self):
         """Initialize a new game"""
         self.clear_screen()
         self.print_title()
         
-        print("🎮 CHARACTER CREATION")
+        print("🎮 CRÉATION DE PERSONNAGE")
         print("="*30)
         
         while True:
-            name = input("Enter your character's name: ").strip()
+            name = input("Entrez le nom de votre héros : ").strip()
             if name and len(name) > 0 and len(name) <= 20:
                 break
             else:
-                print("❌ Please enter a valid name (1-20 characters)")
+                print("❌ Veuillez entrer un nom valide (1-20 caractères)")
         
-        print(f"\nWelcome, {name}! Your adventure begins now...")
-        input("Press Enter to continue...")
+        print(f"\nBienvenue, {name} ! Votre aventure commence maintenant...")
+        input("Appuyez sur Entrée pour continuer...")
         
         # Initialize game components
         self.player = Player(name)
@@ -139,7 +139,7 @@ class Game:
         self.player.current_location = "village"
         self.world.get_current_location().visited = True
         
-        print(f"\n🎉 {name} the hero awakens in the peaceful village!")
+        print(f"\n🎉 {name} le héros s'éveille dans le village paisible !")
         time.sleep(2)
     
     def load_game(self):
@@ -154,17 +154,21 @@ class Game:
             self.world = self.save_manager.deserialize_world(save_data["world"])
             self.story_manager = self.save_manager.deserialize_story(save_data["story"])
             
-            print(f"\n🎉 Welcome back, {self.player.name}!")
+            print(f"\n🎉 Bon retour parmi nous, {self.player.name} !")
             time.sleep(2)
             return True
             
         except Exception as e:
-            print(f"❌ Error loading save file: {e}")
-            input("Press Enter to continue...")
+            print(f"❌ Erreur lors du chargement de la sauvegarde : {e}")
+            input("Appuyez sur Entrée pour continuer...")
             return False
     
     def game_loop(self):
         """Main game loop"""
+        if not self.player or not self.world or not self.story_manager:
+            print("❌ Erreur : Le jeu n'est pas correctement initialisé.")
+            return
+
         while self.running and self.player.is_alive():
             self.clear_screen()
             self.display_game_info()
@@ -201,14 +205,17 @@ class Game:
             elif action == "help":
                 self.handle_help()
             else:
-                print("❌ Invalid action!")
-                input("Press Enter to continue...")
+                print("❌ Action invalide !")
+                input("Appuyez sur Entrée pour continuer...")
     
     def display_game_info(self):
         """Display basic game information"""
-        print(f"📍 Location: {self.world.get_current_location().name}")
+        if not self.world or not self.player or not self.story_manager:
+            return
+            
+        print(f"📍 Lieu : {self.world.get_current_location().name}")
         print(f"⚔️  {self.player.get_stats()}")
-        print(f"📦 Inventory: {len(self.player.inventory)}/20 slots")
+        print(f"📦 Inventaire : {len(self.player.inventory.items)}/20 emplacements")
         
         # Show story status
         story_status = self.story_manager.get_story_status()
@@ -222,7 +229,7 @@ class Game:
         # Show NPCs at location
         npcs = self.story_manager.get_npc_at_location(self.world.current_location_name)
         if npcs:
-            print(f"\n👥 People here:")
+            print(f"\n👥 Personnes ici :")
             for npc in npcs:
                 print(f"   • {npc.name}")
     
@@ -237,8 +244,8 @@ class Game:
         """Start combat with an enemy"""
         enemy = create_enemy(enemy_type)
         
-        print(f"\n⚠️  A wild {enemy.name} appears!")
-        input("Press Enter to start combat...")
+        print(f"\n⚠️  Un {enemy.name} sauvage apparaît !")
+        input("Appuyez sur Entrée pour commencer le combat...")
         
         self.in_combat = True
         victory = CombatManager.start_combat(self.player, enemy)
@@ -254,10 +261,10 @@ class Game:
             
             # Show quest completions
             for quest, rewards in completed_quests:
-                print(f"\n🎉 QUEST COMPLETED: {quest.name}")
+                print(f"\n🎉 QUÊTE TERMINÉE : {quest.name}")
                 if rewards:
-                    print(f"🎁 Rewards: {', '.join(rewards)}")
-                input("Press Enter to continue...")
+                    print(f"🎁 Récompenses : {', '.join(rewards)}")
+                input("Appuyez sur Entrée pour continuer...")
             
             # Advance story
             if enemy_type == "goblin":
@@ -265,17 +272,17 @@ class Game:
     
     def get_player_action(self) -> str:
         """Get player's action choice"""
-        print(f"\n🎮 What would you like to do?")
-        print("1. Move/Travel")
-        print("2. Explore Area")
-        print("3. Inventory")
-        print("4. Quests")
-        print("5. Talk to NPC")
-        print("6. View Map")
-        print("7. Character Stats")
-        print("8. Save Game")
-        print("9. Help")
-        print("0. Quit Game")
+        print(f"\n🎮 Que voulez-vous faire ?")
+        print("1. Se déplacer / Voyager")
+        print("2. Explorer la zone")
+        print("3. Inventaire")
+        print("4. Quêtes")
+        print("5. Parler à un PNJ")
+        print("6. Voir la carte")
+        print("7. Statistiques du personnage")
+        print("8. Sauvegarder")
+        print("9. Aide")
+        print("0. Quitter le jeu")
         
         choice = input("\nEnter your choice (0-9): ").strip()
         
@@ -299,17 +306,17 @@ class Game:
         directions = self.world.get_available_directions()
         
         if not directions:
-            print("❌ There are no exits from this location!")
-            input("Press Enter to continue...")
+            print("❌ Il n'y a pas de sortie ici !")
+            input("Appuyez sur Entrée pour continuer...")
             return
         
-        print(f"\n🧭 Available directions:")
+        print(f"\n🧭 Directions disponibles :")
         for i, direction in enumerate(directions, 1):
             target_location = self.world.get_current_location().connections[direction]
-            print(f"{i}. {direction.upper()} to {target_location}")
+            print(f"{i}. {direction.upper()} vers {target_location}")
         
         try:
-            choice = int(input(f"\nChoose direction (1-{len(directions)}): ")) - 1
+            choice = int(input(f"\nChoisissez une direction (1-{len(directions)}) : ")) - 1
             if 0 <= choice < len(directions):
                 direction = directions[choice]
                 success, message = self.world.move_to_location(direction)
@@ -327,15 +334,15 @@ class Game:
                     print(f"❌ {message}")
                     input("Press Enter to continue...")
             else:
-                print("❌ Invalid direction!")
-                input("Press Enter to continue...")
+                print("❌ Direction invalide !")
+                input("Appuyez sur Entrée pour continuer...")
         except ValueError:
-            print("❌ Please enter a valid number!")
-            input("Press Enter to continue...")
+            print("❌ Veuillez entrer un nombre valide !")
+            input("Appuyez sur Entrée pour continuer...")
     
     def handle_exploration_action(self):
         """Handle active exploration"""
-        print(f"\n🔍 Exploring {self.world.get_current_location().name}...")
+        print(f"\n🔍 Exploration de {self.world.get_current_location().name}...")
         
         # Check for enemy encounter
         enemy_type = self.world.get_current_location().check_for_enemy_encounter()
@@ -346,15 +353,15 @@ class Game:
             if random.random() < 0.3:  # 30% chance
                 item = generate_loot("common")
                 if item:
-                    print(f"💰 You found: {item.name}")
+                    print(f"💰 Vous avez trouvé : {item.name}")
                     if self.player.inventory.add_item(item):
-                        print("📦 Item added to inventory!")
+                        print("📦 Objet ajouté à l'inventaire !")
                     else:
-                        print("❌ Inventory full! Cannot pick up item.")
+                        print("❌ Inventaire plein !")
             else:
-                print("🔍 You explore the area but find nothing of interest.")
+                print("🔍 Vous explorez la zone mais ne trouvez rien d'intéressant.")
             
-            input("Press Enter to continue...")
+            input("Appuyez sur Entrée pour continuer...")
     
     def handle_inventory(self):
         """Handle inventory management"""
@@ -362,49 +369,49 @@ class Game:
         print(self.player.inventory.get_inventory_display())
         
         if self.player.inventory.items:
-            print(f"\nOptions:")
-            print("1. Use Item")
-            print("2. Equip Weapon/Armor")
-            print("3. Back to game")
+            print(f"\nOptions :")
+            print("1. Utiliser un objet")
+            print("2. Équiper Arme/Armure")
+            print("3. Retour au jeu")
             
-            choice = input("\nChoose option (1-3): ").strip()
+            choice = input("\nChoisissez une option (1-3) : ").strip()
             
             if choice == "1":
                 self.use_inventory_item()
             elif choice == "2":
                 self.equip_item()
         
-        input("\nPress Enter to continue...")
+        input("\nAppuyez sur Entrée pour continuer...")
     
     def use_inventory_item(self):
         """Handle using items from inventory"""
         consumables = self.player.inventory.get_items_by_type("consumable")
         
         if not consumables:
-            print("❌ No consumable items available!")
+            print("❌ Aucun objet consommable disponible !")
             return
         
-        print("\n🧪 Consumable Items:")
+        print("\n🧪 Objets consommables :")
         for i, item in enumerate(consumables, 1):
             quantity = f" x{item.quantity}" if item.stackable and item.quantity > 1 else ""
             print(f"{i}. {item.name}{quantity} - {item.get_info()}")
         
         try:
-            choice = int(input("\nChoose item to use (0 to cancel): ")) - 1
+            choice = int(input("\nChoisissez l'objet à utiliser (0 pour annuler) : ")) - 1
             if 0 <= choice < len(consumables):
                 item = consumables[choice]
                 # Find item in inventory and use it
                 for i, inv_item in enumerate(self.player.inventory.items):
                     if inv_item.name == item.name:
                         if self.player.use_item(i):
-                            print(f"✅ Used {item.name}!")
+                            print(f"✅ Utilisé : {item.name} !")
                         break
             elif choice == -1:
                 return
             else:
-                print("❌ Invalid item!")
+                print("❌ Objet invalide !")
         except ValueError:
-            print("❌ Please enter a valid number!")
+            print("❌ Veuillez entrer un nombre valide !")
     
     def equip_item(self):
         """Handle equipping items"""
@@ -412,15 +419,15 @@ class Game:
                    self.player.inventory.get_items_by_type("armor")
         
         if not equipment:
-            print("❌ No equipment available!")
+            print("❌ Aucun équipement disponible !")
             return
         
-        print("\n⚔️  Equipment:")
+        print("\n⚔️  Équipement :")
         for i, item in enumerate(equipment, 1):
             print(f"{i}. {item.name} - {item.get_info()}")
         
         try:
-            choice = int(input("\nChoose item to equip (0 to cancel): ")) - 1
+            choice = int(input("\nChoisissez l'objet à équiper (0 pour annuler) : ")) - 1
             if 0 <= choice < len(equipment):
                 item = equipment[choice]
                 if item.item_type == "weapon":
@@ -430,9 +437,9 @@ class Game:
             elif choice == -1:
                 return
             else:
-                print("❌ Invalid item!")
+                print("❌ Objet invalide !")
         except ValueError:
-            print("❌ Please enter a valid number!")
+            print("❌ Veuillez entrer un nombre valide !")
     
     def handle_quests(self):
         """Handle quest interface"""
@@ -445,25 +452,25 @@ class Game:
         npcs = self.story_manager.get_npc_at_location(self.world.current_location_name)
         
         if not npcs:
-            print("❌ There's no one to talk to here!")
-            input("Press Enter to continue...")
+            print("❌ Il n'y a personne avec qui parler ici !")
+            input("Appuyez sur Entrée pour continuer...")
             return
         
-        print(f"\n👥 Who would you like to talk to?")
+        print(f"\n👥 À qui voulez-vous parler ?")
         for i, npc in enumerate(npcs, 1):
             print(f"{i}. {npc.name}")
         
         try:
-            choice = int(input("\nChoose person (0 to cancel): ")) - 1
+            choice = int(input("\nChoisissez une personne (0 pour annuler) : ")) - 1
             if 0 <= choice < len(npcs):
                 npc = npcs[choice]
                 self.conversation_with_npc(npc)
             elif choice == -1:
                 return
             else:
-                print("❌ Invalid person!")
+                print("❌ Personne invalide !")
         except ValueError:
-            print("❌ Please enter a valid number!")
+            print("❌ Veuillez entrer un nombre valide !")
         
         input("Press Enter to continue...")
     
@@ -480,16 +487,15 @@ class Game:
             # Offer quest
             quest = npc.get_next_quest()
             if quest:
-                print(f"\n📜 Quest Offer: {quest.name}")
+                print(f"\n📜 Offre de quête : {quest.name}")
                 print(f"   {quest.description}")
-                print(f"   Progress:\n{quest.get_progress_text()}")
+                print(f"   Progression :\n{quest.get_progress_text()}")
                 
-                accept = input("\nAccept this quest? (y/n): ").strip().lower()
-                if accept in ['y', 'yes']:
+                accept = input("\nAccepter cette quête ? (o/n) : ").strip().lower()
+                if accept in ['o', 'oui']:
                     print(f"\n{npc.name}: {npc.get_dialogue('quest_accepted')}")
-                    # Note: In a more complex system, we'd track quest acceptance
                 else:
-                    print(f"\n{npc.name}: Perhaps another time then...")
+                    print(f"\n{npc.name}: Une prochaine fois peut-être...")
         else:
             dialogue = npc.get_dialogue("no_quests")
             print(f"\n{npc.name}: {dialogue}")
@@ -509,19 +515,19 @@ class Game:
     def handle_save(self):
         """Handle game saving"""
         if self.save_manager.save_game(self.player, self.world, self.story_manager):
-            print("✅ Game saved successfully!")
+            print("✅ Jeu sauvegardé avec succès !")
         else:
-            print("❌ Failed to save game!")
-        input("Press Enter to continue...")
+            print("❌ Échec de la sauvegarde !")
+        input("Appuyez sur Entrée pour continuer...")
     
     def handle_quit(self):
         """Handle quitting the game"""
-        print("\nAre you sure you want to quit?")
-        print("1. Save and Quit")
-        print("2. Quit without Saving")
-        print("3. Cancel")
+        print("\nÊtes-vous sûr de vouloir quitter ?")
+        print("1. Sauvegarder et Quitter")
+        print("2. Quitter sans sauvegarder")
+        print("3. Annuler")
         
-        choice = input("\nChoose option (1-3): ").strip()
+        choice = input("\nChoisissez une option (1-3) : ").strip()
         
         if choice == "1":
             self.handle_save()
@@ -531,48 +537,39 @@ class Game:
         elif choice == "3":
             return
         else:
-            print("❌ Invalid choice!")
+            print("❌ Choix invalide !")
     
     def handle_help(self):
         """Display help information"""
         help_text = """
-🎮 BHILQUEST - HELP GUIDE
-========================
+    🎮 BHILQUEST - GUIDE D'AIDE
+    ========================
 
-MOVEMENT:
-• Use the Move option to travel between locations
-• Choose from available directions (N, S, E, W, etc.)
+    DÉPLACEMENT :
+    • Utilisez l'option Se déplacer pour voyager entre les lieux.
+    • Choisissez parmi les directions disponibles (N, S, E, O, etc.).
 
-COMBAT:
-• Combat is turn-based and happens automatically during exploration
-• Choose actions: Attack, Defend, Use Item, or Flee
-• Different enemies have different difficulty levels
+    COMBAT :
+    • Le combat est au tour par tour et survient lors de l'exploration.
+    • Actions : Attaquer, Défendre, Utiliser Objet, ou Fuir.
 
-INVENTORY:
-• Manage your items through the Inventory menu
-• Use consumables like health potions
-• Equip weapons and armor to improve stats
+    INVENTAIRE :
+    • Gérez vos objets via le menu Inventaire.
+    • Les consommables soignent ou donnent des bonus.
+    • Équipez armes et armures pour améliorer vos stats.
 
-QUESTS:
-• Talk to NPCs to receive quests
-• Complete quests by meeting requirements
-• Earn experience and rewards for completed quests
+    QUÊTES :
+    • Parlez aux PNJ pour recevoir des quêtes.
+    • Remplissez les conditions pour gagner de l'EXP et des récompenses.
 
-EXPLORATION:
-• Explore areas to find items and encounter enemies
-• Different locations have different dangers and rewards
-• Visit all locations to discover the world
+    CONSEILS :
+    • Sauvegardez régulièrement.
+    • Faites le plein de potions avant les zones dangereuses.
 
-TIPS:
-• Save your game progress regularly
-• Stock up on healing potions before dangerous areas
-• Complete quests to gain experience and rewards
-• Explore thoroughly to find valuable items
-
-Good luck, hero!
+    Bonne chance, héros !
         """
         print(help_text)
-        input("\nPress Enter to continue...")
+        input("\nAppuyez sur Entrée pour continuer...")
     
     def game_over(self):
         """Handle game over"""
@@ -588,13 +585,13 @@ Good luck, hero!
                         GAME OVER
         """)
         
-        print(f"\n💀 {self.player.name} has fallen in battle...")
-        print(f"📊 Final Stats:")
-        print(f"   Level: {self.player.level}")
-        print(f"   Quests Completed: {len(self.player.quests_completed)}")
-        print(f"   Locations Visited: {sum(1 for loc in self.world.locations.values() if loc.visited)}")
+        print(f"\n💀 {self.player.name} est tombé au combat...")
+        print(f"📊 Stats Finales :")
+        print(f"   Niveau : {self.player.level}")
+        print(f"   Quêtes terminées : {len(self.player.quests_completed)}")
+        print(f"   Lieux visités : {sum(1 for loc in self.world.locations.values() if loc.visited)}")
         
-        input("\nPress Enter to return to main menu...")
+        input("\nAppuyez sur Entrée pour retourner au menu principal...")
         self.running = False
     
     def run(self):
@@ -603,7 +600,7 @@ Good luck, hero!
             menu_choice = self.main_menu()
             
             if menu_choice == "quit":
-                print("\n👋 Thanks for playing BhilQuest!")
+                print("\n👋 Merci d'avoir joué à BhilQuest !")
                 break
             elif menu_choice == "new":
                 self.create_new_game()
@@ -624,10 +621,10 @@ def main():
         game = Game()
         game.run()
     except KeyboardInterrupt:
-        print("\n\n👋 Thanks for playing BhilQuest!")
+        print("\n\n👋 Merci d'avoir joué à BhilQuest !")
         sys.exit(0)
     except Exception as e:
-        print(f"\n❌ An error occurred: {e}")
+        print(f"\n❌ Une erreur est survenue : {e}")
         sys.exit(1)
 
 

@@ -39,28 +39,28 @@ class SaveManager:
             with open(self.save_file, 'w') as f:
                 json.dump(save_data, f, indent=2)
             
-            print(f"✅ Game saved successfully!")
+            print(f"✅ Jeu sauvegardé avec succès !")
             return True
             
         except Exception as e:
-            print(f"❌ Failed to save game: {e}")
+            print(f"❌ Échec de la sauvegarde : {e}")
             return False
     
     def load_game(self) -> Optional[Dict[str, Any]]:
         """Load game state from file"""
         try:
             if not os.path.exists(self.save_file):
-                print("❌ No save file found!")
+                print("❌ Aucune sauvegarde trouvée !")
                 return None
             
             with open(self.save_file, 'r') as f:
                 save_data = json.load(f)
             
-            print(f"✅ Game loaded successfully! (Saved: {save_data.get('timestamp', 'Unknown')})")
+            print(f"✅ Jeu chargé avec succès ! (Sauvegardé le : {save_data.get('timestamp', 'Inconnu')})")
             return save_data
             
         except Exception as e:
-            print(f"❌ Failed to load game: {e}")
+            print(f"❌ Échec du chargement : {e}")
             return None
     
     def has_save_file(self) -> bool:
@@ -72,13 +72,13 @@ class SaveManager:
         try:
             if os.path.exists(self.save_file):
                 os.remove(self.save_file)
-                print("✅ Save file deleted!")
+                print("✅ Sauvegarde supprimée !")
                 return True
             else:
-                print("❌ No save file to delete!")
+                print("❌ Aucune sauvegarde à supprimer !")
                 return False
         except Exception as e:
-            print(f"❌ Failed to delete save file: {e}")
+            print(f"❌ Échec de la suppression : {e}")
             return False
     
     def serialize_player(self, player: Player) -> Dict[str, Any]:
@@ -118,9 +118,11 @@ class SaveManager:
     def serialize_inventory(self, inventory: Inventory) -> List[Dict[str, Any]]:
         """Serialize inventory to list of dictionaries"""
         serialized_items = []
-        if hasattr(inventory, 'items') and inventory.items:
+        if hasattr(inventory, 'items') and isinstance(inventory.items, list):
             for item in inventory.items:
-                serialized_items.append(self.serialize_item(item))
+                serialized = self.serialize_item(item)
+                if serialized:
+                    serialized_items.append(serialized)
         return serialized_items
     
     def serialize_item(self, item: Optional[Item]) -> Optional[Dict[str, Any]]:
@@ -269,10 +271,10 @@ class SaveManager:
             
             player_data = save_data.get("player", {})
             return {
-                "player_name": player_data.get("name", "Unknown"),
+                "player_name": player_data.get("name", "Inconnu"),
                 "level": str(player_data.get("level", 1)),
-                "location": player_data.get("current_location", "Unknown"),
-                "timestamp": save_data.get("timestamp", "Unknown"),
+                "location": player_data.get("current_location", "Inconnu"),
+                "timestamp": save_data.get("timestamp", "Inconnu"),
                 "quests_completed": str(len(player_data.get("quests_completed", [])))
             }
         except Exception:
@@ -282,15 +284,15 @@ class SaveManager:
         """Display formatted save information"""
         save_info = self.get_save_info()
         if save_info:
-            print("\n📁 SAVE FILE INFO")
+            print("\n📁 INFORMATIONS DE SAUVEGARDE")
             print("=" * 30)
-            print(f"Player: {save_info['player_name']}")
-            print(f"Level: {save_info['level']}")
-            print(f"Location: {save_info['location']}")
-            print(f"Quests Completed: {save_info['quests_completed']}")
-            print(f"Saved: {save_info['timestamp']}")
+            print(f"Joueur : {save_info['player_name']}")
+            print(f"Niveau : {save_info['level']}")
+            print(f"Lieu : {save_info['location']}")
+            print(f"Quêtes terminées : {save_info['quests_completed']}")
+            print(f"Sauvegardé le : {save_info['timestamp']}")
         else:
-            print("\n❌ No save file found!")
+            print("\n❌ Aucune sauvegarde trouvée !")
 
 
 # Auto-save functionality
@@ -300,7 +302,7 @@ class AutoSave:
     def __init__(self, save_manager: SaveManager, auto_save_interval: int = 300):
         self.save_manager = save_manager
         self.auto_save_interval = auto_save_interval  # seconds
-        self.last_save_time = 0
+        self.last_save_time: float = 0.0
     
     def should_auto_save(self) -> bool:
         """Check if it's time to auto-save"""
@@ -314,6 +316,6 @@ class AutoSave:
             if self.save_manager.save_game(player, world, story_manager):
                 import time
                 self.last_save_time = time.time()
-                print("💾 Game auto-saved!")
+                print("💾 Jeu sauvegardé automatiquement !")
                 return True
         return False

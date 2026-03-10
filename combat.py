@@ -25,9 +25,9 @@ class Combat:
     
     def start_combat(self) -> bool:
         """Start combat, return True if player wins, False if player loses"""
-        print(f"\n⚔️  COMBAT BEGINS!")
+        print(f"\n⚔️  LE COMBAT COMMENCE !")
         print(f"{'='*50}")
-        print(f"{self.player.name} VS {self.enemy.name}")
+        print(f"{self.player.name} CONTRE {self.enemy.name}")
         print(f"{'='*50}")
         print(f"{self.player.get_stats()}")
         print(f"{self.enemy.get_stats()}")
@@ -38,7 +38,7 @@ class Combat:
             self.player_defending = False
             self.enemy_defending = False
             
-            print(f"\n--- TURN {self.turn_count} ---")
+            print(f"\n--- TOUR {self.turn_count} ---")
             
             # Player turn
             if self.player_turn():
@@ -59,15 +59,15 @@ class Combat:
     
     def player_turn(self) -> bool:
         """Handle player's turn, return True if combat ended"""
-        print(f"\n{self.player.name}'s Turn:")
-        print("1. Attack")
-        print("2. Defend")
-        print("3. Use Item")
-        print("4. Flee")
+        print(f"\nTour de {self.player.name} :")
+        print("1. Attaquer")
+        print("2. Défendre")
+        print("3. Utiliser un objet")
+        print("4. Fuir")
         
         while True:
             try:
-                choice = input("Choose your action (1-4): ").strip()
+                choice = input("Choisissez votre action (1-4) : ").strip()
                 
                 if choice == "1":
                     return self.player_attack()
@@ -78,10 +78,11 @@ class Combat:
                 elif choice == "4":
                     return self.player_flee()
                 else:
-                    print("Invalid choice! Please enter 1-4.")
+                    print("Choix invalide ! Veuillez entrer 1 à 4.")
             except KeyboardInterrupt:
-                print("\nCombat interrupted!")
+                print("\nCombat interrompu !")
                 return True
+        return False  # Should normally not be reached
     
     def player_attack(self) -> bool:
         """Player attacks enemy"""
@@ -92,14 +93,14 @@ class Combat:
         # Apply enemy defense if not defending
         if self.enemy_defending:
             damage = max(1, damage // 2)
-            print(f"🛡️  {self.enemy.name} is defending! Damage reduced!")
+            print(f"🛡️  {self.enemy.name} se défend ! Dégâts réduits !")
         
         actual_damage = self.enemy.take_damage(damage)
         
-        print(f"⚔️  {self.player.name} attacks {self.enemy.name} for {actual_damage} damage!")
+        print(f"⚔️  {self.player.name} attaque {self.enemy.name} pour {actual_damage} dégâts !")
         
         if not self.enemy.is_alive():
-            print(f"💀 {self.enemy.name} has been defeated!")
+            print(f"💀 {self.enemy.name} a été vaincu !")
             return True
         
         return False
@@ -107,66 +108,67 @@ class Combat:
     def player_defend(self) -> bool:
         """Player defends"""
         self.player_defending = True
-        print(f"🛡️  {self.player.name} takes a defensive stance!")
+        print(f"🛡️  {self.player.name} adopte une posture défensive !")
         return False
     
     def player_use_item(self) -> bool:
         """Player uses an item"""
-        if not self.player.inventory:
-            print("🎒 You have no items to use!")
+        if not self.player.inventory.items:
+            print("🎒 Vous n'avez aucun objet à utiliser !")
             return self.player_turn()  # Re-prompt
         
-        print("\n🎒 Your Items:")
-        for i, item in enumerate(self.player.inventory):
+        print("\n🎒 Vos Objets :")
+        for i, item in enumerate(self.player.inventory.items):
             if item.item_type == "consumable":
                 quantity = f" x{item.quantity}" if item.stackable and item.quantity > 1 else ""
                 print(f"{i+1}. {item.name}{quantity} - {item.get_info()}")
         
         while True:
             try:
-                choice = input("Choose item to use (or 0 to cancel): ").strip()
+                choice = input("Choisissez l'objet à utiliser (ou 0 pour annuler) : ").strip()
                 
                 if choice == "0":
                     return self.player_turn()  # Re-prompt
                 
                 item_index = int(choice) - 1
-                if 0 <= item_index < len(self.player.inventory):
-                    item = self.player.inventory[item_index]
+                if 0 <= item_index < len(self.player.inventory.items):
+                    item = self.player.inventory.items[item_index]
                     if item.item_type == "consumable":
                         if self.player.use_item(item_index):
                             return False
                         else:
-                            print("❌ Cannot use this item!")
+                            print("❌ Impossible d'utiliser cet objet !")
                     else:
-                        print("❌ This item cannot be used in combat!")
+                        print("❌ Cet objet ne peut pas être utilisé en combat !")
                 else:
-                    print("Invalid item number!")
+                    print("Numéro d'objet invalide !")
             except ValueError:
-                print("Please enter a valid number!")
+                print("Veuillez entrer un numéro valide !")
+        return False  # Should normally not be reached
     
     def player_flee(self) -> bool:
         """Player attempts to flee"""
         self.flee_attempts += 1
         
         if self.flee_attempts >= self.max_flee_attempts:
-            print("💨 You've attempted to flee too many times! You must fight!")
+            print("💨 Vous avez tenté de fuir trop de fois ! Vous devez vous battre !")
             return False
         
         flee_chance = 0.4 + (self.flee_attempts * 0.1)  # Increasing chance
         flee_chance = min(0.8, flee_chance)  # Max 80% chance
         
         if random.random() < flee_chance:
-            print(f"💨 {self.player.name} successfully fled from combat!")
+            print(f"💨 {self.player.name} a fui le combat avec succès !")
             return True
         else:
-            print(f"❌ {self.player.name} failed to flee!")
+            print(f"❌ {self.player.name} n'a pas réussi à fuir !")
             return False
     
     def enemy_turn(self):
         """Handle enemy's turn"""
         action = self.enemy.choose_action(self.player)
         
-        print(f"\n{self.enemy.name}'s Turn:")
+        print(f"\nTour de {self.enemy.name} :")
         
         if action == "attack":
             self.enemy_attack()
@@ -180,14 +182,14 @@ class Combat:
         # Apply player defense if defending
         if self.player_defending:
             damage = max(1, damage // 2)
-            print(f"🛡️  {self.player.name} is defending! Damage reduced!")
+            print(f"🛡️  {self.player.name} se défend ! Dégâts réduits !")
         
         actual_damage = self.player.take_damage(damage)
         
-        print(f"⚔️  {self.enemy.name} attacks {self.player.name} for {actual_damage} damage!")
+        print(f"⚔️  {self.enemy.name} attaque {self.player.name} pour {actual_damage} dégâts !")
         
         if not self.player.is_alive():
-            print(f"💀 {self.player.name} has been defeated!")
+            print(f"💀 {self.player.name} a été vaincu !")
             return True
         
         return False
@@ -195,47 +197,47 @@ class Combat:
     def enemy_defend(self):
         """Enemy defends"""
         self.enemy_defending = True
-        print(f"🛡️  {self.enemy.name} takes a defensive stance!")
+        print(f"🛡️  {self.enemy.name} adopte une posture défensive !")
     
     def display_combat_status(self):
         """Display current combat status"""
-        print(f"\n📊 COMBAT STATUS")
+        print(f"\n📊 STATUT DU COMBAT")
         print(f"{'='*30}")
-        print(f"{self.player.name}: {self.player.hp}/{self.player.max_hp} HP")
-        print(f"{self.enemy.name}: {self.enemy.hp}/{self.enemy.max_hp} HP")
+        print(f"{self.player.name}: {self.player.hp}/{self.player.max_hp} PV")
+        print(f"{self.enemy.name}: {self.enemy.hp}/{self.enemy.max_hp} PV")
         
         if self.player_defending:
-            print(f"🛡️  {self.player.name} is defending")
+            print(f"🛡️  {self.player.name} se défend")
         if self.enemy_defending:
-            print(f"🛡️  {self.enemy.name} is defending")
+            print(f"🛡️  {self.enemy.name} se défend")
     
     def resolve_combat(self) -> bool:
         """Resolve combat outcome and handle rewards"""
         print(f"\n{'='*50}")
         
         if self.player.is_alive():
-            print(f"🎉 VICTORY! {self.player.name} has defeated {self.enemy.name}!")
+            print(f"🎉 VICTOIRE ! {self.player.name} a vaincu {self.enemy.name} !")
             
             # Experience reward
             exp_gained = self.enemy.exp_reward
             leveled_up = self.player.gain_experience(exp_gained)
             
-            print(f"📈 Gained {exp_gained} EXP!")
+            print(f"📈 Vous avez gagné {exp_gained} points d'expérience !")
             
             # Loot drops
             loot = self.generate_loot()
             if loot:
-                print(f"💰 {self.enemy.name} dropped:")
+                print(f"💰 {self.enemy.name} a fait tomber :")
                 for item in loot:
                     if self.player.inventory.add_item(item):
                         print(f"   📦 {item.name}")
                     else:
-                        print(f"   ❌ Inventory full! Cannot pick up {item.name}")
+                        print(f"   ❌ Inventaire plein ! Impossible de ramasser {item.name}")
             
             return True
         else:
-            print(f"💀 DEFEAT! {self.player.name} has been defeated by {self.enemy.name}!")
-            print("💔 You have lost the battle...")
+            print(f"💀 DÉFAITE ! {self.player.name} a été vaincu par {self.enemy.name} !")
+            print("💔 Vous avez perdu le combat...")
             return False
     
     def generate_loot(self) -> list:

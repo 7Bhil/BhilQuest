@@ -46,19 +46,19 @@ class Location:
         desc += f"{self.description}\n\n"
         
         if self.connections:
-            desc += "🧭 Exits: "
+            desc += "🧭 Sorties : "
             exits = []
             for direction, location in self.connections.items():
-                exits.append(f"{direction.upper()} to {location}")
+                exits.append(f"{direction.upper()} vers {location}")
             desc += ", ".join(exits) + "\n"
         
         if self.npcs and not self.visited:
             npc_names = [npc.name for npc in self.npcs]
-            desc += f"\n👥 People here: {', '.join(npc_names)}"
+            desc += f"\n👥 Personnes ici : {', '.join(npc_names)}"
         
         if self.items:
             item_names = [item.name for item in self.items]
-            desc += f"\n📦 Items visible: {', '.join(item_names)}"
+            desc += f"\n📦 Objets visibles : {', '.join(item_names)}"
         
         return desc
     
@@ -82,99 +82,99 @@ class World:
         """Create the game world with all locations"""
         # Village - Starting location
         village = Location(
-            "Peaceful Village",
-            "A small, peaceful village surrounded by wooden palisades. You can see a few houses, a blacksmith shop, and a well in the center. The villagers go about their daily routines, and the atmosphere is calm and welcoming.",
+            "Village Paisible",
+            "Un petit village paisible entouré de palissades en bois. Vous pouvez voir quelques maisons, une forge et un puits au centre. Les villageois vaquent à leurs occupations quotidiennes, et l'atmosphère est calme et accueillante.",
             "village"
         )
-        village.add_connection("north", "forest")
-        village.add_connection("east", "ruins")
-        village.add_connection("west", "dungeon_entrance")
+        village.add_connection("nord", "forest")
+        village.add_connection("est", "ruins")
+        village.add_connection("ouest", "dungeon_entrance")
         
         # Forest
         forest = Location(
-            "Mystic Forest",
-            "A dense, ancient forest with tall trees that block out most sunlight. The air is thick with the smell of moss and damp earth. You can hear birds chirping and occasionally rustling in the bushes. Pathways wind between the trees, but it's easy to get lost if you're not careful.",
+            "Forêt Mystique",
+            "Une forêt dense et ancienne avec de grands arbres qui bloquent la majeure partie de la lumière du soleil. L'air est chargé de l'odeur de mousse et de terre humide. Vous entendez des oiseaux gazouiller et parfois des bruits dans les buissons.",
             "forest"
         )
-        forest.add_connection("south", "village")
-        forest.add_connection("north", "deep_forest")
-        forest.add_connection("east", "ruins")
+        forest.add_connection("sud", "village")
+        forest.add_connection("nord", "deep_forest")
+        forest.add_connection("est", "ruins")
         forest.add_enemy_spawn("wolf", 0.4)
         forest.add_enemy_spawn("goblin", 0.3)
         
         # Deep Forest
         deep_forest = Location(
-            "Deep Forest",
-            "The deeper part of the forest where the trees are older and the shadows are longer. Strange glowing mushrooms grow on fallen logs, and you feel an otherworldly presence. This area is known to be dangerous, with many creatures lurking in the darkness.",
+            "Forêt Profonde",
+            "La partie la plus profonde de la forêt où les arbres sont plus vieux et les ombres plus longues. Des champignons luisants poussent sur les troncs tombés. Cette zone est réputée dangereuse.",
             "forest"
         )
-        deep_forest.add_connection("south", "forest")
-        deep_forest.add_connection("north", "mountain_pass")
+        deep_forest.add_connection("sud", "forest")
+        deep_forest.add_connection("nord", "mountain_pass")
         deep_forest.add_enemy_spawn("wolf", 0.5)
         deep_forest.add_enemy_spawn("bandit", 0.3)
         deep_forest.add_enemy_spawn("orc", 0.1)
         
         # Ruins
         ruins = Location(
-            "Ancient Ruins",
-            "The crumbling remains of an ancient civilization. Broken columns and weathered stone structures dot the landscape. Strange symbols are carved into the stones, and you can feel the weight of history in this place. Treasure hunters often explore here, but many dangers lurk in the shadows.",
+            "Ruines Antiques",
+            "Les restes s'effondrant d'une ancienne civilisation. Des colonnes brisées et des structures en pierre érodées parsèment le paysage. Des symboles étranges sont gravés dans la pierre.",
             "ruins"
         )
-        ruins.add_connection("west", "village")
-        ruins.add_connection("south", "forest")
-        ruins.add_connection("east", "abandoned_temple")
+        ruins.add_connection("ouest", "village")
+        ruins.add_connection("sud", "forest")
+        ruins.add_connection("est", "abandoned_temple")
         ruins.add_enemy_spawn("skeleton", 0.4)
         ruins.add_enemy_spawn("bandit", 0.3)
         
         # Abandoned Temple
         abandoned_temple = Location(
-            "Abandoned Temple",
-            "A once-sacred temple now fallen into disrepair. The stone walls are covered in vines, and the altar is cracked and stained. Strange echoes seem to bounce off the walls, and you feel an unsettling presence. Ancient artifacts might still be hidden within.",
+            "Temple Abandonné",
+            "Un temple autrefois sacré, aujourd'hui tombé en désuétude. Les murs en pierre sont couverts de lierre et l'autel est fissuré. Des échos étranges semblent rebondir sur les murs.",
             "ruins"
         )
-        abandoned_temple.add_connection("west", "ruins")
+        abandoned_temple.add_connection("ouest", "ruins")
         abandoned_temple.add_enemy_spawn("skeleton", 0.6)
         abandoned_temple.add_enemy_spawn("orc", 0.2)
         
         # Dungeon Entrance
         dungeon_entrance = Location(
-            "Dungeon Entrance",
-            "A dark, foreboding entrance to what appears to be an underground dungeon. The stone archway is covered in warning symbols, and cold air wafts up from below. You can hear dripping water and distant, unidentifiable sounds. Only the brave would dare enter.",
+            "Entrée du Donjon",
+            "Une entrée sombre et menaçante vers ce qui semble être un donjon souterrain. L'arche en pierre est couverte de symboles d'avertissement. Seuls les braves oseraient entrer.",
             "dungeon"
         )
-        dungeon_entrance.add_connection("east", "village")
-        dungeon_entrance.add_connection("down", "dungeon_halls")
+        dungeon_entrance.add_connection("est", "village")
+        dungeon_entrance.add_connection("bas", "dungeon_halls")
         dungeon_entrance.add_enemy_spawn("goblin", 0.3)
         dungeon_entrance.add_enemy_spawn("skeleton", 0.2)
         
         # Dungeon Halls
         dungeon_halls = Location(
-            "Dungeon Halls",
-            "Underground halls with stone walls and torch-lit corridors. The air is damp and cold, and your footsteps echo in the silence. Prison cells line some walls, and you can see evidence of past battles. This place is clearly dangerous.",
+            "Couloirs du Donjon",
+            "Des salles souterraines avec des murs en pierre et des couloirs éclairés à la torche. L'air est humide et froid, et vos pas résonnent dans le silence.",
             "dungeon"
         )
-        dungeon_halls.add_connection("up", "dungeon_entrance")
-        dungeon_halls.add_connection("north", "dungeon_depths")
+        dungeon_halls.add_connection("haut", "dungeon_entrance")
+        dungeon_halls.add_connection("nord", "dungeon_depths")
         dungeon_halls.add_enemy_spawn("skeleton", 0.5)
         dungeon_halls.add_enemy_spawn("orc", 0.3)
         
         # Dungeon Depths
         dungeon_depths = Location(
-            "Dungeon Depths",
-            "The deepest part of the dungeon where the most dangerous creatures dwell. The walls are covered in dark stains, and you can hear growling from ahead. A massive chamber opens up, and in the center, you can see the silhouette of something large and powerful.",
+            "Profondeurs du Donjon",
+            "La partie la plus profonde du donjon où résident les créatures les plus dangereuses. Un vaste hall s'ouvre, et au centre, vous voyez une silhouette massive et puissante.",
             "dungeon"
         )
-        dungeon_depths.add_connection("south", "dungeon_halls")
+        dungeon_depths.add_connection("sud", "dungeon_halls")
         dungeon_depths.add_enemy_spawn("orc", 0.4)
         dungeon_depths.add_enemy_spawn("dragon", 0.1)
         
         # Mountain Pass
         mountain_pass = Location(
-            "Mountain Pass",
-            "A narrow mountain path with steep cliffs on both sides. The wind howls through the pass, and you can see snow on the peaks above. This path connects to other regions, but it's treacherous and only experienced travelers should attempt it.",
+            "Col de la Montagne",
+            "Un sentier de montagne étroit avec des falaises abruptes des deux côtés. Le vent hurle à travers le col, et vous pouvez voir de la neige sur les sommets au-dessus.",
             "forest"
         )
-        mountain_pass.add_connection("south", "deep_forest")
+        mountain_pass.add_connection("sud", "deep_forest")
         mountain_pass.add_enemy_spawn("wolf", 0.3)
         mountain_pass.add_enemy_spawn("orc", 0.2)
         
@@ -203,9 +203,9 @@ class World:
             self.current_location_name = current.connections[direction.lower()]
             new_location = self.get_current_location()
             new_location.visited = True
-            return True, f"You travel {direction.lower()} to {new_location.name}"
+            return True, f"Vous voyagez vers le {direction.lower()} jusqu'à : {new_location.name}"
         else:
-            return False, f"You cannot go {direction.lower()} from here"
+            return False, f"Vous ne pouvez pas aller vers le {direction.lower()} depuis ici"
     
     def explore_current_location(self) -> Tuple[bool, Optional[str]]:
         """Explore current location for potential encounters"""
@@ -224,29 +224,29 @@ class World:
     def get_world_map(self) -> str:
         """Return a simple text representation of the world map"""
         map_text = """
-🗺️  WORLD MAP
+🗺️  CARTE DU MONDE
 ================
 
-Village (Start)
+Village (Départ)
 │
-├─ North → Mystic Forest
+├─ Nord → Forêt Mystique
 │   │
-│   └─ North → Deep Forest
+│   └─ Nord → Forêt Profonde
 │       │
-│       └─ North → Mountain Pass
+│       └─ Nord → Col de la Montagne
 │
-├─ East → Ancient Ruins
+├─ Est → Ruines Antiques
 │   │
-│   └─ East → Abandoned Temple
+│   └─ Est → Temple Abandonné
 │
-└─ West → Dungeon Entrance
+└─ Ouest → Entrée du Donjon
     │
-    └─ Down → Dungeon Halls
+    └─ Bas → Couloirs du Donjon
         │
-        └─ North → Dungeon Depths
+        └─ Nord → Profondeurs du Donjon
 
-Current Location: {}
-        """.format(self.current_location_name.replace("_", " ").title())
+Lieu Actuel : {}
+        """.format(self.get_current_location().name)
         return map_text
     
     def get_location_info(self) -> str:
@@ -255,11 +255,11 @@ Current Location: {}
         info = current.get_description()
         
         # Add danger level indicator
-        danger_level = "🟢 Safe"
+        danger_level = "🟢 Sûr"
         if current.enemy_encounter_chance > 0.4:
-            danger_level = "🔴 Dangerous"
+            danger_level = "🔴 Dangereux"
         elif current.enemy_encounter_chance > 0.2:
-            danger_level = "🟡 Moderate"
+            danger_level = "🟡 Modéré"
         
-        info += f"\n⚠️  Danger Level: {danger_level}"
+        info += f"\n⚠️  Niveau de Danger : {danger_level}"
         return info

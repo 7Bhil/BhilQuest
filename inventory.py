@@ -1,7 +1,9 @@
 """
-Inventory module for BhilGame
-Handles items, equipment, and inventory management
+Module d'Inventaire pour BhilQuest
+Gère les objets, l'équipement et la gestion de l'inventaire
 """
+
+import random
 
 from typing import List, Dict, Optional
 from character import Player
@@ -328,4 +330,4 @@ def generate_loot(rarity: str = "common") -> Optional[Item]:
     return loot_table[0][0]()
 
 
-import random
+

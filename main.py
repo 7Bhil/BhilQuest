@@ -1,10 +1,10 @@
 """
-BhilQuest - A Terminal-Based RPG Adventure Game
-Main game loop and user interface
+BhilQuest - Boucle de jeu principale et interface utilisateur
+Gère la logique globale et l'interaction avec le joueur
 
-Created by: Bhilal CHITOU (Bhil€)
-Contact: 7bhilal.chitou7@gmail.com
-GitHub: https://github.com/7Bhil
+Créé par : Bhilal CHITOU (Bhil€)
+Contact : 7bhilal.chitou7@gmail.com
+GitHub : https://github.com/7Bhil
 """
 
 import os
@@ -60,15 +60,14 @@ class Game:
 ██╔══██╗██╔══██║██║██║     ██║▄▄ ██║ ██║   ██║██╔══╝  ╚════██║   ██║   
 ██████╔╝██║  ██║██║███████╗╚██████╔╝ ╚██████╔╝███████╗███████║   ██║   
 ╚═════╝ ╚═╝  ╚═╝╚═╝╚══════╝ ╚══▀▀═╝   ╚═════╝ ╚══════╝╚══════╝   ╚═╝    
-                                                                                                                 
-                           make by Bhilal. CHITOU (Bhil€)
+                                                                                                                                            créé par Bhilal. CHITOU (Bhil€)
         """
         print(self.colors['cyan'] + title + self.colors['reset'])
-        print(self.colors['yellow'] + "                    A Terminal RPG Adventure" + self.colors['reset'])
+        print(self.colors['yellow'] + "                    Une Aventure RPG en Console" + self.colors['reset'])
         print("\n" + "="*60 + "\n")
     
     def print_with_delay(self, text: str, delay: float = 0.03):
-        """Print text with typewriter effect"""
+        """Affiche le texte avec un effet de machine à écrire"""
         for char in text:
             print(char, end='', flush=True)
             time.sleep(delay)
@@ -131,8 +130,12 @@ class Game:
         self.story_manager = StoryManager()
         
         # Give starting items
-        self.player.add_item(create_health_potion())
-        self.player.add_item(create_health_potion())
+        if self.player:
+            self.player.add_item(create_health_potion())
+            self.player.add_item(create_health_potion())
+        else:
+            print("❌ Erreur : Le joueur n'a pas pu être créé.")
+            return
         
         # Set starting location
         self.world.current_location_name = "village"
@@ -284,7 +287,7 @@ class Game:
         print("9. Aide")
         print("0. Quitter le jeu")
         
-        choice = input("\nEnter your choice (0-9): ").strip()
+        choice = input("\nChoisissez une option (0-9) : ").strip()
         
         actions = {
             "1": "move",
@@ -329,10 +332,10 @@ class Game:
                     new_location = self.world.get_current_location()
                     if not new_location.visited:
                         print(f"\n{new_location.get_description()}")
-                        input("Press Enter to continue...")
+                        input("Appuyez sur Entrée pour continuer...")
                 else:
                     print(f"❌ {message}")
-                    input("Press Enter to continue...")
+                    input("Appuyez sur Entrée pour continuer...")
             else:
                 print("❌ Direction invalide !")
                 input("Appuyez sur Entrée pour continuer...")
@@ -445,7 +448,7 @@ class Game:
         """Handle quest interface"""
         self.clear_screen()
         print(self.story_manager.get_quests_display(self.player))
-        input("\nPress Enter to continue...")
+        input("\nAppuyez sur Entrée pour continuer...")
     
     def handle_talk(self):
         """Handle talking to NPCs"""
@@ -472,7 +475,7 @@ class Game:
         except ValueError:
             print("❌ Veuillez entrer un nombre valide !")
         
-        input("Press Enter to continue...")
+        input("Appuyez sur Entrée pour continuer...")
     
     def conversation_with_npc(self, npc):
         """Handle conversation with an NPC"""
@@ -504,13 +507,13 @@ class Game:
         """Handle world map display"""
         self.clear_screen()
         print(self.world.get_world_map())
-        input("\nPress Enter to continue...")
+        input("\nAppuyez sur Entrée pour continuer...")
     
     def handle_stats(self):
         """Handle character stats display"""
         self.clear_screen()
         print(self.player.get_detailed_stats())
-        input("\nPress Enter to continue...")
+        input("\nAppuyez sur Entrée pour continuer...")
     
     def handle_save(self):
         """Handle game saving"""

@@ -1,6 +1,6 @@
 """
-Story module for BhilGame
-Handles quests, dialogues, and story progression
+Module Histoire pour BhilQuest
+Gère les quêtes, les dialogues et la progression de l'histoire
 """
 
 from typing import Dict, List, Optional, Tuple

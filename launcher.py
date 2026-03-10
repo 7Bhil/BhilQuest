@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 BhilQuest - Lanceur
 Démarre le jeu BhilQuest

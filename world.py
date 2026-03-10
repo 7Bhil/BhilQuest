@@ -1,6 +1,6 @@
 """
-World module for BhilGame
-Handles world map, locations, and exploration system
+Module Monde pour BhilQuest
+Gère la carte du monde, les lieux et le système d'exploration
 """
 
 import random

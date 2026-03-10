@@ -1,22 +1,10 @@
-#!/usr/bin/env python3
-"""
-BhilQuest - Launcher Shortcut
-Point d'entrée principal avec système i18n intégré
+#!/bin/bash
+# BhilQuest - Raccourci de Lancement (Linux)
+# Démarre le jeu BhilQuest
 
-Créé par: Bhilal CHITOU (Bhil€)
-Email: 7bhilal.chitou7@gmail.com
-GitHub: https://github.com/7Bhil
-"""
+# Récupère le répertoire où se trouve ce script
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-import sys
-import os
-
-# Ajoute le répertoire courant au PYTHONPATH pour les imports
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, current_dir)
-
-# Import du lanceur
-from launcher import main
-
-if __name__ == "__main__":
-    main()
+# Exécute le lanceur Python dans le bon répertoire
+cd "$DIR"
+python3 launcher.py

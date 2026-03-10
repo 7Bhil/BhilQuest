@@ -1,6 +1,6 @@
 """
-Save module for BhilGame
-Handles save and load system using JSON
+Module de Sauvegarde pour BhilQuest
+Gère le système de sauvegarde et de chargement via JSON
 """
 
 import json

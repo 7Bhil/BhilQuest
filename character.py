@@ -1,6 +1,6 @@
 """
-Character module for BhilGame
-Handles player and enemy classes with stats and leveling system
+Module Personnage pour BhilQuest
+Gère les classes Joueur et Ennemi avec statistiques et système de niveau
 """
 
 import random
@@ -79,6 +79,10 @@ class Player(Character):
         self.equipped_armor = None
         self.quests_completed = []
         self.current_location = "village"
+        
+    def add_item(self, item) -> bool:
+        """Add item to player inventory"""
+        return self.inventory.add_item(item)
         
     def get_total_attack(self) -> int:
         """Calculate total attack including equipped weapon"""

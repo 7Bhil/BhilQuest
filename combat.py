@@ -1,6 +1,6 @@
 """
-Combat module for BhilGame
-Handles turn-based combat system between player and enemies
+Module de Combat pour BhilQuest
+Gère le système de combat au tour par tour entre le joueur et les ennemis
 """
 
 import random
